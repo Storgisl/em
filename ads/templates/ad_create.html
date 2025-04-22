@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ad_create.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ad-form-container">
+    <h1><i class="fas fa-plus-circle"></i>Создать новое объявление</h1>
+
+    <form method="post" class="ad-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            {{ form.title.label_tag }}
+            {{ form.title }}
+            {% if form.title.errors %}
+            <div class="error-message">{{ form.title.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+            {% if form.description.errors %}
+            <div class="error-message">{{ form.description.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.image_url.label_tag }}
+            {{ form.image_url }}
+            {% if form.image_url.errors %}
+            <div class="error-message">{{ form.image_url.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.category.label_tag }}
+                {{ form.category }}
+                {% if form.category.errors %}
+                <div class="error-message">{{ form.category.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.condition.label_tag }}
+                {{ form.condition }}
+                {% if form.condition.errors %}
+                <div class="error-message">{{ form.condition.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">
+                <i class="fas fa-save"></i> Создать
+            </button>
+            <a href="{% url 'account' %}" class="btn-cancel">
+                <i class="fas fa-times"></i> Отменить
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

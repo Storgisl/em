@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/account.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="account-container">
+    <div class="account-sidebar">
+        <div class="user-profile-card">
+            <div class="profile-picture-container">
+                {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+                {% else %}
+                    <div class="default-profile-picture">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="user-info">
+                <h3>{{ user.username }}</h3>
+                <form action="{% url 'logout' %}" method="post" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Выйти
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="account-section">
+        <div class="section-header">
+            <h2><i class="fas fa-ad"></i> Мои объявления ({{ user_ads.count }})</h2>
+            <a href="{% url 'ad_create' %}" class="create-ad-btn floating-btn">
+                <i class="fas fa-plus"></i> Создать объявление
+            </a>
+        </div>
+
+        {% if user_ads %}
+        <div class="user-ads-grid">
+            {% for ad in user_ads %}
+            <div class="ad-card">
+                <div class="ad-actions">
+                    <a href="{% url 'ad_edit' ad.id %}" class="edit-btn" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="{% url 'ad_delete' ad.id %}" method="post" class="delete-form">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn" title="Delete" onclick="return confirm('Вы уверены?')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
+                <a href="{% url 'ad_detail' ad.id %}" class="ad-card-link">
+                    {% if ad.image %}
+                    <div class="ad-image-container">
+                        <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="ad-image">
+                    </div>
+                    {% endif %}
+                    <div class="ad-content">
+                        <h3 class="ad-title">{{ ad.title }}</h3>
+                        <p class="ad-description">{{ ad.description|truncatechars:100 }}</p>
+                        <div class="ad-meta">
+                            {% if ad.category %}
+                            <span class="ad-category">
+                                <i class="fas fa-tag"></i> {{ ad.get_category_display }}
+                            </span>
+                            {% endif %}
+                            {% if ad.price %}
+                            <span class="ad-price">
+                                <i class="fas fa-dollar-sign"></i> {{ ad.price }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="ad-footer">
+                            <span class="ad-posted">
+                                <i class="far fa-clock"></i> {{ ad.created_at|date:"M d, Y" }}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-ads">
+            <i class="far fa-folder-open"></i>
+            <p>У вас нет ещё ни одного объявления</p>
+            <a href="{% url 'ad_create' %}" class="btn-create-ad">
+                <i class="fas fa-plus"></i> Создайте ваше первое объявление
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="section-header section-header-proposals">
+            <h2><i class="fas fa-exchange-alt"></i> Обмен предложениями</h2>
+        </div>
+
+        <div class="proposals-tabs">
+            <button class="tab-button active" onclick="openTab(event, 'received-proposals')">Получено ({{ received_proposals.count }})</button>
+            <button class="tab-button" onclick="openTab(event, 'sent-proposals')">Отправлено ({{ sent_proposals.count }})</button>
+            <button class="tab-button" onclick="openTab(event, 'history-proposals')">История</button>
+        </div>
+
+        <div id="received-proposals" class="proposals-tab-content" style="display: block;">
+            {% if received_proposals %}
+            <div class="proposals-grid">
+                {% for proposal in received_proposals %}
+                <div class="proposal-card">
+                    <div class="proposal-header">
+                        <h4>From: {{ proposal.ad_sender.username }}</h4>
+                        <span class="proposal-status status-{{ proposal.condition }}">
+                            {{ proposal.get_condition_display }}
+                        </span>
+                        <span class="proposal-date">{{ proposal.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="proposal-details">
+                        <div class="proposal-item">
+                            <span class="proposal-label">Их предложение:</span>
+                            <a href="{% url 'ad_detail' proposal.ad_sender.id %}" class="proposal-ad">
+                                {{ proposal.ad_sender.title }}
+                            </a>
+                        </div>
+                        <div class="proposal-item">
+                            <span class="proposal-label">Ваше предложение:</span>
+                            <a href="{% url 'ad_detail' proposal.ad_receiver.id %}" class="proposal-ad">
+                                {{ proposal.ad_receiver.title }}
+                            </a>
+                        </div>
+                        <div class="proposal-comment">
+                            <p><strong>Комментарий:</strong> {{ proposal.comment }}</p>
+                        </div>
+                        {% if proposal.condition == 'pending' %}
+                        <div class="proposal-actions">
+                            <form action="{% url 'proposal_accept' proposal.id %}" method="post" class="action-form">
+                                {% csrf_token %}
+                                <button type="submit" class="accept-btn">Принять</button>
+                            </form>
+                            <form action="{% url 'proposal_decline' proposal.id %}" method="post" class="action-form">
+                                {% csrf_token %}
+                                <button type="submit" class="decline-btn">Отказать</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-proposals">
+                <i class="far fa-envelope-open"></i>
+                <p>Нет предложений обмена</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div id="sent-proposals" class="proposals-tab-content">
+            {% if sent_proposals %}
+            <div class="proposals-grid">
+                {% for proposal in sent_proposals %}
+                <div class="proposal-card">
+                    <div class="proposal-header">
+                        <h4>To: {{ proposal.ad_receiver.user.username }}</h4>
+                        <span class="proposal-status status-{{ proposal.condition }}">
+                            {{ proposal.get_condition_display }}
+                        </span>
+                        <span class="proposal-date">{{ proposal.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="proposal-details">
+                        <div class="proposal-item">
+                            <span class="proposal-label">Ваше предложение:</span>
+                            <a href="{% url 'ad_detail' proposal.ad_sender.id %}" class="proposal-ad">
+                                {{ proposal.ad_sender.title }}
+                            </a>
+                        </div>
+                        <div class="proposal-item">
+                            <span class="proposal-label">Их предложение:</span>
+                            <a href="{% url 'ad_detail' proposal.ad_receiver.id %}" class="proposal-ad">
+                                {{ proposal.ad_receiver.title }}
+                            </a>
+                        </div>
+                        <div class="proposal-comment">
+                            <p><strong>Комментарий:</strong> {{ proposal.comment }}</p>
+                        </div>
+                        {% if proposal.condition == 'pending' %}
+                        <div class="proposal-actions">
+                            <form action="{% url 'proposal_cancel' proposal.id %}" method="post" class="action-form">
+                                {% csrf_token %}
+                                <button type="submit" class="cancel-btn">Отменить</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-proposals">
+                <i class="far fa-paper-plane"></i>
+                <p>Нет предложений обмена</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div id="history-proposals" class="proposals-tab-content">
+            {% if history_proposals %}
+            <div class="proposals-grid">
+                {% for proposal in history_proposals %}
+                <div class="proposal-card">
+                    <div class="proposal-header">
+                        <h4>
+                            {% if proposal.ad_sender == request.user %}
+                                Кому: {{ proposal.ad_receiver.user.username }}
+                            {% else %}
+                                От кого: {{ proposal.ad_sender.username }}
+                            {% endif %}
+                        </h4>
+                        <span class="proposal-status status-{{ proposal.condition }}">
+                            {{ proposal.get_condition_display }}
+                        </span>
+                        <span class="proposal-date">{{ proposal.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="proposal-details">
+                        <div class="proposal-item">
+                            <span class="proposal-label">
+                                {% if proposal.ad_sender == request.user %}Ваше предложение{% else %}Их предложение{% endif %}:
+                            </span>
+                            <a href="{% url 'ad_detail' proposal.ad_sender.id %}" class="proposal-ad">
+                                {{ proposal.ad_sender.title }}
+                            </a>
+                        </div>
+                        <div class="proposal-item">
+                            <span class="proposal-label">
+                                {% if proposal.ad_sender == request.user %}Ваше предложение{% else %}Их предложение{% endif %}:
+                            </span>
+                            <a href="{% url 'ad_detail' proposal.ad_receiver.id %}" class="proposal-ad">
+                                {{ proposal.ad_receiver.title }}
+                            </a>
+                        </div>
+                        <div class="proposal-comment">
+                            <p><strong>Комментарий:</strong> {{ proposal.comment }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-proposals">
+                <i class="fas fa-history"></i>
+                <p>Нет предложений обмена</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="{% static 'js/account.js' %}"></script>
+{% endblock %}
+{% endblock %}

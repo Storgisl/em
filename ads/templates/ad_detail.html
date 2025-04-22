@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %} <link rel="stylesheet" href="{% static 'css/ad_detail.css' %}"> {% endblock %}
+{% block content %}
+<div class="ad-detail-container">
+    <div class="ad-detail-header">
+        <h1>{{ ad.title }}</h1>
+        {% if request.user == ad.user %}
+        <div class="ad-actions">
+            <a href="{% url 'ad_edit' ad.id %}" class="edit-btn">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <form action="{% url 'ad_delete' ad.id %}" method="post" class="delete-form">
+                {% csrf_token %}
+                <button type="submit" class="delete-btn" onclick="return confirm('Вы точно хотите удалить объявление?')">
+                    <i class="fas fa-trash-alt"></i> Удалить
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="ad-detail-content">
+        <div class="ad-images">
+            {% if ad.image_url %}
+            <div class="main-image">
+                <img src="{{ ad.image_url }}" alt="{{ ad.title }}">
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="ad-info">
+            <div class="ad-meta">
+                <div class="meta-item">
+                    <i class="fas fa-tag"></i>
+                    <span>Категория: {{ ad.get_category_display }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-certificate"></i>
+                    <span>Состояние: {{ ad.get_condition_display }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="far fa-calendar-alt"></i>
+                    <span>Опубликовано: {{ ad.created_at|date:"M d, Y" }}</span>
+                </div>
+            </div>
+
+            <div class="ad-description">
+                <h3>Описание</h3>
+                <p>{{ ad.description }}</p>
+            </div>
+
+            <div class="ad-contact">
+            {% if user.is_authenticated and user != ad.user and user_has_ads %}
+            <div class="exchange-action">
+                <a href="{% url 'send_exchange' ad.id %}" class="exchange-btn">
+                    <i class="fas fa-exchange-alt"></i> Предложмить обмен
+                </a>
+            </div>
+            {% endif %}
+            {% if user == ad.user %}
+            <div class="ad-actions">
+                <a href="{% url 'ad_edit' ad.id %}" class="btn-edit">
+                    <i class="fas fa-edit"></i> Изменить
+                </a>
+                <form action="{% url 'ad_delete' ad.id %}" method="post" class="delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-btn" onclick="return confirm('Вы точно хотите удалить объявление?')">
+                        <i class="fas fa-trash-alt"></i> Удалить
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

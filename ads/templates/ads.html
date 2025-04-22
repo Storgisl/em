@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ads.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ads-container">
+    <header class="ads-header">
+        <h1>Доступные предложения</h1>
+    </header>
+
+    <section class="ads-filters">
+        <form method="get" class="filter-form">
+            <div class="filter-group">
+                <h3>Категории</h3>
+                <div class="filter-options">
+                    <button type="submit" name="category" value="" 
+                            class="filter-btn {% if not selected_category %}active{% endif %}">
+                        Все
+                    </button>
+                    {% for value, name in categories %}
+                    <button type="submit" name="category" value="{{ value }}" 
+                            class="filter-btn {% if selected_category == value %}active{% endif %}">
+                        {{ value }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <div class="ads-grid">
+        {% for ad in ads %}
+        <div class="ad-card-wrapper">
+            <a href="{% url 'ad_detail' ad.id %}" class="ad-card-link">
+                <div class="ad-card">
+                    {% if ad.image_url %}
+                    <div class="ad-image-container">
+                        <img src="{{ ad.image_url }}" alt="{{ ad.title }}" class="ad-image">
+                    </div>
+                    {% endif %}
+                    <div class="ad-content">
+                        <h3 class="ad-title">{{ ad.title }}</h3>
+                        <p class="ad-description">{{ ad.description|truncatechars:100 }}</p>
+                        <div class="ad-meta">
+                            <span class="ad-category">
+                                <i class="fas fa-tag"></i> {{ ad.get_category_display }}
+                            </span>
+                        </div>
+                        <div class="ad-footer">
+                            <span class="ad-posted">
+                                <i class="far fa-clock"></i> {{ ad.created_at|date:"M d, Y" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% if user.is_authenticated and user != ad.user and user_has_ads %}
+            <div class="exchange-btn-container">
+                <a href="{% url 'send_exchange' ad.id %}" class="exchange-btn">
+                    <i class="fas fa-exchange-alt"></i> Обмен
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <h3>Пока что нет объявлений</h3>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/ads.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,305 @@
+/* Ad Detail Page Styles */
+.ad-detail-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.ad-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.ad-detail-header h1 {
+    margin: 0;
+    color: #2d3748;
+}
+
+.ad-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.edit-btn, .delete-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.edit-btn {
+    background-color: #4299e1;
+    color: white;
+    border: none;
+}
+
+.edit-btn:hover {
+    background-color: #3182ce;
+}
+
+.delete-btn {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: #c53030;
+}
+
+.ad-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.ad-images {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.main-image img {
+    width: 100%;
+    border-radius: 4px;
+    max-height: 500px;
+    object-fit: contain;
+}
+
+.ad-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.ad-meta {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.meta-item:last-child {
+    margin-bottom: 0;
+}
+
+.meta-item i {
+    width: 20px;
+    color: #718096;
+}
+
+.ad-description {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.ad-description h3 {
+    margin-top: 0;
+    color: #2d3748;
+}
+
+.ad-contact {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.ad-contact h3 {
+    margin-top: 0;
+    color: #2d3748;
+}
+
+.contact-methods {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.contact-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.email-btn {
+    background-color: #4299e1;
+    color: white;
+}
+
+.email-btn:hover {
+    background-color: #3182ce;
+}
+
+.phone-btn {
+    background-color: #48bb78;
+    color: white;
+}
+
+.phone-btn:hover {
+    background-color: #38a169;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ad-detail-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .ad-detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .contact-methods {
+        flex-direction: column;
+    }
+    
+    .contact-btn {
+        justify-content: center;
+    }
+}
+.exchange-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #48bb78;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.exchange-btn:hover {
+    background: #38a169;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.ad-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-edit {
+    padding: 0.75rem 1.5rem;
+    background: #4299e1;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-edit:hover {
+    background: #3182ce;
+}
+
+.btn-delete {
+    padding: 0.75rem 1.5rem;
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-delete:hover {
+    background: #c53030;
+}
+
+/* For account.html listings */
+.delete-form {
+    display: inline;
+}
+
+.delete-btn {
+    background: rgba(255,255,255,0.9);
+    padding: 0.5rem;
+    border-radius: 50%;
+    color: #e53e3e;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.delete-btn:hover {
+    background: white;
+    transform: scale(1.1);
+}
+
+.ad-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.exchange-btn {
+    padding: 0.75rem 1.5rem;
+    background: #48bb78;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.exchange-btn:hover {
+    background: #38a169;
+    transform: translateY(-2px);
+}
+
+.exchange-action {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.exchange-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #48bb78;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.exchange-btn:hover {
+    background-color: #38a169;
+    transform: translateY(-2px);
+}
