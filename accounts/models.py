@@ -27,5 +27,5 @@ class CustomUser(AbstractUser):
     )
 
     class Meta:
-        db_table = 'custom_user'  # Explicit table name
+        db_table = 'custom_user'
         swappable = 'AUTH_USER_MODEL'

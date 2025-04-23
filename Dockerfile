@@ -1,13 +1,11 @@
-FROM python:3.12.9
+from python:3.12.9
 
-WORKDIR /app
+workdir /app
 
-COPY requirements.txt /app/
+copy requirements.txt /app/
 
-RUN pip install --no-cache-dir -r requirements.txt
+run pip install --no-cache-dir -r requirements.txt
 
-COPY . /app
+copy . /app
 
-RUN python manage.py collectstatic --noinput
-
-EXPOSE 8000
+expose 8000

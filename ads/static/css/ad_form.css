@@ -1,11 +1,9 @@
-/* Error message styling */
 .error-message {
     color: #e53e3e;
     font-size: 0.8rem;
     margin-top: 0.25rem;
 }
 
-/* Add to existing ad-form-container styles */
 .ad-form-container {
     max-width: 800px;
     margin: 2rem auto;
@@ -22,5 +20,3 @@
     align-items: center;
     gap: 0.75rem;
 }
-
-/* Rest of your existing form styles... */

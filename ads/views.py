@@ -104,19 +104,6 @@ def ad_edit(request, pk):
 
 
 @login_required
-def ad_delete(request, pk):
-    ad = get_object_or_404(Ad, id=pk, user=request.user)
-
-    if request.method == 'POST':
-        ad.delete()
-        messages.success(request, 'Your ad has been deleted successfully.')
-        return redirect('account')
-
-    context = {'ad': ad}
-    return render(request, 'ad_confirm_delete.html', context)
-
-
-@login_required
 def ad_create(request):
     if request.method == 'POST':
         form = AdCreateForm(request.POST)
@@ -137,8 +124,8 @@ def ad_create(request):
 def cancel_proposal(request, proposal_id):
     proposal = get_object_or_404(
         ExchangeProposal, 
-        id=proposal_id, 
-        ad_sender=request.user
+        id=proposal_id,
+        ad_sender__user=request.user
     )
     if proposal.condition == 'pending':
         proposal.condition = 'canceled'

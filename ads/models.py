@@ -25,7 +25,8 @@ class Ad(models.Model):
     )
     description = models.TextField(
         max_length=500,
-        verbose_name="Описание"
+        verbose_name="Описание",
+        blank=True
     )
     image_url = models.URLField(
         null=True,
@@ -80,7 +81,8 @@ class ExchangeProposal(models.Model):
         blank=True
     )
     comment = models.TextField(
-        verbose_name="Комментарий"
+        verbose_name="Комментарий",
+        blank=True
     )
     condition = models.CharField(
         max_length=20,

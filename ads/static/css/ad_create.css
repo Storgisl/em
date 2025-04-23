@@ -17,7 +17,6 @@
     gap: 0.5rem;
 }
 
-/* Form styling */
 .ad-form {
     display: flex;
     flex-direction: column;
@@ -59,7 +58,6 @@
     resize: vertical;
 }
 
-/* Form row for side-by-side fields */
 .form-row {
     display: flex;
     gap: 1.5rem;
@@ -69,14 +67,12 @@
     flex: 1;
 }
 
-/* Error messages */
 .error-message {
     color: #e53e3e;
     font-size: 0.8rem;
     margin-top: 0.25rem;
 }
 
-/* Form actions */
 .form-actions {
     display: flex;
     gap: 1rem;
@@ -124,13 +120,11 @@
     border-color: #ddd;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .ad-form-container {
         padding: 1.5rem;
         margin: 1rem;
     }
-    
     .form-row {
         flex-direction: column;
         gap: 1.5rem;
@@ -141,15 +135,12 @@
     .ad-form-container {
         padding: 1rem;
     }
-    
     .ad-form-container h1 {
         font-size: 1.5rem;
     }
-    
     .form-actions {
         flex-direction: column;
     }
-    
     .btn-save,
     .btn-cancel {
         width: 100%;
