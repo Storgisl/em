@@ -24,3 +24,4 @@ DJANGO_SUPERUSER_PASSWORD=admin123
 docker compose up
 ```
 Веб приложение будет доступно на localhost:8000
+# Test commit
