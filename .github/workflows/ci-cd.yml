@@ -7,11 +7,9 @@ on:
     branches: [main, master]
 
 jobs:
-  build-and-test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+  build-test-linux:
+    name: Build and Test (Linux)
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout repository
@@ -27,35 +25,88 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Run tests with SQLite (no database)
+    - name: Run basic checks
       run: |
-        # Создаем временные настройки для тестов без реальной БД
-        echo "Running basic tests..."
         python manage.py check
-        echo "Basic checks passed!"
+        echo "Build and basic checks completed on Linux"
+
+  build-test-windows:
+    name: Build and Test (Windows)
+    runs-on: windows-latest
     
-    - name: Check build
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
       run: |
-        echo "Build successful on ${{ matrix.os }}"
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run basic checks
+      run: |
+        python manage.py check
+        echo "Build and basic checks completed on Windows"
+
+  build-test-macos:
+    name: Build and Test (macOS)
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run basic checks
+      run: |
+        python manage.py check
+        echo "Build and basic checks completed on macOS"
 
   deploy:
+    name: Deploy Application
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: [build-test-linux, build-test-windows, build-test-macos]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
     
-    - name: Deploy via SSH
+    - name: Deploy to server via SSH
+      if: env.DEPLOY_ENABLED == 'true'
+      env:
+        DEPLOY_ENABLED: ${{ secrets.DEPLOY_ENABLED == 'true' }}
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.DEPLOY_HOST }}
         username: ${{ secrets.DEPLOY_USER }}
         key: ${{ secrets.DEPLOY_SSH_KEY }}
+        port: ${{ secrets.DEPLOY_PORT || 22 }}
         script: |
           cd /var/www/em
           git pull origin main
           docker-compose down
           docker-compose build
           docker-compose up -d
+    
+    - name: Skip deploy (secrets not configured)
+      if: env.DEPLOY_ENABLED != 'true'
+      run: |
+        echo "Deployment skipped: DEPLOY_ENABLED secret is not set to 'true'"
+        echo "To enable deployment:"
+        echo "1. Add DEPLOY_ENABLED=true to GitHub Secrets"
+        echo "2. Add DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY"
